@@ -56,19 +56,3 @@ npm start
 ```
 2. Open http://localhost:3000 in your browser.
 
-## Screenshots
-
-![Screenshots and video/Screenshot 1.png](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/Screenshot%201.png)
-
-![Screenshots and video/Screenshot 2.png](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/Screenshot%202.png)
-
-![Screenshots and video/Screenshot 3.png](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/Screenshot%203.png)
-
-![Screenshots and video/Screenshot 4.png](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/Screenshot%204.png)
-
-![Screenshots and video/Screenshot 5.png](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/Screenshot%205.png)
-
-## video
-
-![Screenshots and video/quiz-app.mp4](https://github.com/arjunjaver/quiz-app/blob/f86b34e6e8e0aa2a4a24b1b2d613143d18972bd8/Screenshots%20and%20video/quiz-app.mp4)
-
