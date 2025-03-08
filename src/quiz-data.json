@@ -1,0 +1,86 @@
+{
+    "response_code": 0,
+    "results": [
+      {
+        "type": "multiple",
+        "difficulty": "easy",
+        "category": "General Knowledge",
+        "question": "Which planet is known as the 'Red Planet'?",
+        "correct_answer": "Mars",
+        "incorrect_answers": ["Jupiter", "Venus", "Saturn"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "hard",
+        "category": "General Knowledge",
+        "question": "Who painted the famous Mona Lisa?",
+        "correct_answer": "Leonardo da Vinci",
+        "incorrect_answers": ["Michelangelo", "Vincent van Gogh", "Pablo Picasso"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "easy",
+        "category": "General Knowledge",
+        "question": "What is the capital city of Australia?",
+        "correct_answer": "Canberra",
+        "incorrect_answers": ["Sydney", "Melbourne", "Brisbane"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "hard",
+        "category": "General Knowledge",
+        "question": "What is the largest ocean on Earth?",
+        "correct_answer": "Pacific Ocean",
+        "incorrect_answers": ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "easy",
+        "category": "General Knowledge",
+        "question": "What is the chemical symbol for water?",
+        "correct_answer": "H2O",
+        "incorrect_answers": ["CO2", "O2", "N2"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "medium",
+        "category": "General Knowledge",
+        "question": "Which country is known as the 'Land of the Rising Sun'?",
+        "correct_answer": "Japan",
+        "incorrect_answers": ["China", "South Korea", "India"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "medium",
+        "category": "General Knowledge",
+        "question": "What is the currency of the United Kingdom?",
+        "correct_answer": "Pound Sterling",
+        "incorrect_answers": ["Euro", "Dollar", "Yen"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "easy",
+        "category": "General Knowledge",
+        "question": "Who invented the telephone?",
+        "correct_answer": "Alexander Graham Bell",
+        "incorrect_answers": ["Thomas Edison", "Guglielmo Marconi", "Nikola Tesla"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "medium",
+        "category": "General Knowledge",
+        "question": "What is the largest land mammal on Earth?",
+        "correct_answer": "Elephant",
+        "incorrect_answers": ["Giraffe", "Hippopotamus", "Rhinoceros"]
+      },
+      {
+        "type": "multiple",
+        "difficulty": "hard",
+        "category": "General Knowledge",
+        "question": "Who wrote the famous play 'Hamlet'?",
+        "correct_answer": "William Shakespeare",
+        "incorrect_answers": ["Charles Dickens", "Jane Austen", "Mark Twain"]
+      }
+    ]
+  }
+  

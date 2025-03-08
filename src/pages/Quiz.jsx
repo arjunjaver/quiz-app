@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import spinner from "./loader.gif";
+import quizDataFile from "../quiz-data.json";  
 
 export default function Quiz() {
   const [quizData, setQuizData] = useState(null);
@@ -8,24 +9,22 @@ export default function Quiz() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState(30);
   const [score, setScore] = useState(0);
-  const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
-  const [correctOption, setCorrectOption] = useState(null); 
 
   useEffect(() => {
-    const fetchQuizData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/quiz');
-        const data = await response.json();
-        setQuizData(data);
-      } catch (error) {
-        console.error("Error fetching quiz data:", error);
-      }
-    };
-    fetchQuizData();
+    
+    const formattedQuestions = quizDataFile.results.map((q) => ({
+      question: q.question,
+      options: shuffleOptions([
+        ...q.incorrect_answers.map((ans) => ({ description: ans, is_correct: false })),
+        { description: q.correct_answer, is_correct: true },
+      ]),
+    }));
+
+    setQuizData({ questions: formattedQuestions });
   }, []);
 
   useEffect(() => {
@@ -33,20 +32,51 @@ export default function Quiz() {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else {
-      if (currentQuestionIndex < quizData.questions.length - 1) {
-        nextQuestion();
-      } else {
-        setShowResult(true);
-      }
+      nextQuestion();
     }
-  }, [timeLeft, currentQuestionIndex, quizData]);
+  }, [timeLeft]);
 
-  if (!quizData)
+  function shuffleOptions(options) {
+    return options.sort(() => Math.random() - 0.5);
+  }
+
+  if (!quizData || quizData.questions.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600">
         <img src={spinner} alt="Loading..." className="w-20 h-20" />
       </div>
     );
+  }
+
+  const currentQuestion = quizData.questions[currentQuestionIndex];
+
+  const handleOptionSelect = (option) => {
+    if (selectedOption) return;
+    setSelectedOption(option);
+    setIsCorrect(option.is_correct);
+    setMessage(option.is_correct ? "Correct!" : "Wrong Answer!");
+    setShowMessage(true);
+
+    if (option.is_correct) {
+      setScore((prev) => prev + 1);
+    }
+
+    setTimeout(() => {
+      setShowMessage(false);
+      nextQuestion();
+    }, 2000);
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestionIndex < quizData.questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedOption(null);
+      setIsCorrect(null);
+      setTimeLeft(30);
+    } else {
+      setShowResult(true);
+    }
+  };
 
   if (showResult) {
     const totalQuestions = quizData.questions.length;
@@ -76,76 +106,48 @@ export default function Quiz() {
     );
   }
 
-  const currentQuestion = quizData.questions[currentQuestionIndex];
-
-  const handleOptionSelect = (option) => {
-    if (selectedOption) return;
-
-    setSelectedOption(option.description);
-    setCorrectOption(currentQuestion.options.find(opt => opt.is_correct)); 
-    setIsCorrect(option.is_correct);
-    setMessage(option.is_correct ? 'Correct!' : 'Wrong Answer!');
-    setShowMessage(true);
-
-    if (option.is_correct) {
-      setScore(prev => prev + 1);
-    }
-
-    setAnswers([...answers, { question: currentQuestion.description, answer: option.description, correct: option.is_correct }]);
-
-    setTimeout(() => {
-      setShowMessage(false);
-      nextQuestion();
-    }, 2000);
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestionIndex < quizData.questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setIsCorrect(null);
-      setCorrectOption(null); 
-      setTimeLeft(30);
-    } else {
-      setShowResult(true);
-    }
-  };
-
   const progress = (timeLeft / 30) * 100;
   const progressColor = `rgb(${255 - progress * 2.55}, ${progress * 2.55}, 0)`;
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-      <h1 className="text-3xl font-bold mb-4 text-white">{quizData.title}</h1>
-      <div className="box bg-white p-6 rounded-lg shadow-lg w-[400px] h-[500px] text-black relative">
+      <h1 className="text-3xl font-bold mb-4">General Knowledge Quiz</h1>
+      <div className="box bg-white p-6 rounded-lg shadow-lg w-[400px] h-[450px] text-black relative">
         <div className="absolute top-0 left-0 w-full h-2 bg-gray-300 overflow-hidden rounded">
           <div
             className="h-full transition-all duration-1000"
             style={{ width: `${progress}%`, backgroundColor: progressColor }}
           ></div>
         </div>
-        <h2 className="text-xl font-semibold mb-4 mt-4">Question {currentQuestionIndex + 1}/{quizData.questions.length}</h2>
-        <p className="mb-4">{currentQuestion.description}</p>
+        <h2 className="text-xl font-semibold mb-4 mt-4">
+          Question {currentQuestionIndex + 1}/{quizData.questions.length}
+        </h2>
+
+        <p className="mb-4">{currentQuestion.question}</p>
         <ul>
           {currentQuestion.options.map((option, index) => (
             <li
               key={index}
               className={`mb-2 px-4 py-2 rounded-lg cursor-pointer transition
-                ${selectedOption === option.description 
-                  ? (isCorrect 
-                      ? 'border-green-500 bg-green-100' 
-                      : 'border-red-500 bg-red-100') 
-                  : 'border-gray-300 hover:bg-gray-200'} border-2
-                ${correctOption && option.description === correctOption.description && !isCorrect ? 'border-green-500 bg-green-100' : ''}`} 
+                ${
+                  selectedOption === option
+                    ? isCorrect
+                      ? "border-green-500 bg-green-100"
+                      : "border-red-500 bg-red-100"
+                    : "border-gray-300 hover:bg-gray-200"
+                } border-2`}
               onClick={() => handleOptionSelect(option)}
-              style={{ pointerEvents: selectedOption ? 'none' : 'auto' }}
+              style={{ pointerEvents: selectedOption ? "none" : "auto" }}
             >
               {option.description}
             </li>
           ))}
         </ul>
+
         {showMessage && (
-          <div className={`mt-4 p-2 text-center text-white rounded-lg ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}>{message}</div>
+          <div className={`mt-4 p-2 text-center text-white rounded-lg ${isCorrect ? "bg-green-500" : "bg-red-500"}`}>
+            {message}
+          </div>
         )}
       </div>
     </div>
