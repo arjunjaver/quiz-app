@@ -13,9 +13,11 @@ export default function Quiz() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [correctOption, setCorrectOption] = useState(null); 
+
 
   useEffect(() => {
-    
+    // ✅ Always set quizData, even if empty, to prevent hook order issues.
     const formattedQuestions = quizDataFile.results.map((q) => ({
       question: q.question,
       options: shuffleOptions([
@@ -23,7 +25,7 @@ export default function Quiz() {
         { description: q.correct_answer, is_correct: true },
       ]),
     }));
-
+  
     setQuizData({ questions: formattedQuestions });
   }, []);
 
@@ -40,15 +42,17 @@ export default function Quiz() {
     return options.sort(() => Math.random() - 0.5);
   }
 
-  if (!quizData || quizData.questions.length === 0) {
+  if (!quizData || !quizData.questions || quizData.questions.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-r from-blue-500 to-purple-600">
         <img src={spinner} alt="Loading..." className="w-20 h-20" />
       </div>
     );
   }
-
+  
   const currentQuestion = quizData.questions[currentQuestionIndex];
+  
+  
 
   const handleOptionSelect = (option) => {
     if (selectedOption) return;
@@ -56,16 +60,24 @@ export default function Quiz() {
     setIsCorrect(option.is_correct);
     setMessage(option.is_correct ? "Correct!" : "Wrong Answer!");
     setShowMessage(true);
-
+  
     if (option.is_correct) {
       setScore((prev) => prev + 1);
+    } else {
+      // ✅ Store the correct option when user selects wrong
+      const correctAns = currentQuestion.options.find((opt) => opt.is_correct);
+      setCorrectOption(correctAns);
     }
-
+  
     setTimeout(() => {
       setShowMessage(false);
+      setCorrectOption(null); // Reset for next question
       nextQuestion();
     }, 2000);
   };
+  
+  
+
 
   const nextQuestion = () => {
     if (currentQuestionIndex < quizData.questions.length - 1) {
@@ -125,24 +137,30 @@ export default function Quiz() {
 
         <p className="mb-4">{currentQuestion.question}</p>
         <ul>
-          {currentQuestion.options.map((option, index) => (
-            <li
-              key={index}
-              className={`mb-2 px-4 py-2 rounded-lg cursor-pointer transition
-                ${
-                  selectedOption === option
-                    ? isCorrect
-                      ? "border-green-500 bg-green-100"
-                      : "border-red-500 bg-red-100"
-                    : "border-gray-300 hover:bg-gray-200"
-                } border-2`}
-              onClick={() => handleOptionSelect(option)}
-              style={{ pointerEvents: selectedOption ? "none" : "auto" }}
-            >
-              {option.description}
-            </li>
-          ))}
-        </ul>
+  {currentQuestion.options.map((option, index) => (
+    <li
+      key={index}
+      className={`mb-2 px-4 py-2 rounded-lg cursor-pointer transition border-2
+        ${
+          selectedOption === option
+            ? isCorrect
+              ? "border-green-500 bg-green-100"
+              : "border-red-500 bg-red-100"
+            : correctOption === option // ✅ Show correct answer if user was wrong
+            ? "border-green-500 bg-green-100"
+            : "border-gray-300 hover:bg-gray-200"
+        }`}
+      onClick={() => handleOptionSelect(option)}
+      style={{ pointerEvents: selectedOption ? "none" : "auto" }}
+    >
+      {option.description}
+    </li>
+  ))}
+</ul>
+
+
+
+
 
         {showMessage && (
           <div className={`mt-4 p-2 text-center text-white rounded-lg ${isCorrect ? "bg-green-500" : "bg-red-500"}`}>
